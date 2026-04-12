@@ -1,0 +1,35 @@
+flowchart TD
+    A[VarmorPolicy / VarmorClusterPolicy]
+    B[GenerateProfile]
+    C1[GenerateAlwaysAllowProfile]
+    C2[GenerateRuntimeDefaultProfile]
+    C3[GenerateEnhanceProtectProfile]
+    C4[GenerateBehaviorModelingProfile]
+    C5[GenerateDefenseInDepthProfile]
+    D1[template.go 模板骨架]
+    D2[rules.go 生成 built-in 或 raw 规则片段]
+    D3[builder.go 基于行为模型拼装规则]
+    E[最终 AppArmor 文本]
+    F[profile.AppArmor]
+    G[ArmorProfile.Spec.Profile.AppArmor]
+
+    A --> B
+    B --> C1
+    B --> C2
+    B --> C3
+    B --> C4
+    B --> C5
+
+    C1 --> D1
+    C2 --> D1
+    C3 --> D1
+    C3 --> D2
+    C4 --> D1
+    C5 --> D1
+    C5 --> D2
+    C4 --> D3
+
+    D1 --> E
+    D2 --> E
+    D3 --> E
+    E --> F --> G

@@ -1,0 +1,26 @@
+flowchart TD
+    A[NetworkEgressRule]
+    A --> B1[ToDestinations]
+    A --> B2[ToPods]
+    A --> B3[ToServices]
+
+    B1 --> C1[generateRawNetworkEgressRuleForDestinations]
+    B2 --> C2[generateRawNetworkEgressRuleForPods]
+    B3 --> C3[generateRawNetworkEgressRuleForServices]
+
+    C1 --> D1[GenerateRawNetworkEgressRuleWithIPCidrPorts]
+    C2 --> K1[查询 Pods]
+    C3 --> K2[查询 Services]
+    C3 --> K3[查询 EndpointSlices]
+
+    K1 --> D2[展开 PodIPs 和 Ports]
+    K2 --> D3[展开 Service ClusterIPs]
+    K3 --> D4[展开 Endpoint IPs 和 Ports]
+
+    D1 --> E1[BpfContent.Networks]
+    D2 --> E1
+    D3 --> E1
+    D4 --> E1
+
+    C2 --> F1[EgressInfo.ToPods]
+    C3 --> F2[EgressInfo.ToServices]

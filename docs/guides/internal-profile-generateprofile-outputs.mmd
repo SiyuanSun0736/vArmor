@@ -1,0 +1,20 @@
+flowchart LR
+    A[Policy Mode + Enforcer + Feature Gates]
+    B[GenerateProfile]
+
+    A --> B
+
+    B --> C1[AppArmor generator]
+    B --> C2[BPF generator]
+    B --> C3[Seccomp generator]
+
+    C1 --> D1[profile.AppArmor]
+    C2 --> D2[profile.Bpf]
+    C2 --> E[EgressInfo]
+    C3 --> D3[profile.Seccomp]
+
+    D1 --> F[Unified varmor.Profile]
+    D2 --> F
+    D3 --> F
+
+    F --> G[ArmorProfile.Spec.Profile]

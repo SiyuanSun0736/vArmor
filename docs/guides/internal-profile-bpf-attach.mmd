@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant Agent as vArmor Agent
+    participant Enforcer as BpfEnforcer
+    participant Kernel as Kernel LSM Hooks
+    participant API as ArmorProfile Watch
+    participant Cache as bpfProfileCache / eBPF Maps
+    participant Monitor as RuntimeMonitor
+    participant Container as Container
+
+    Agent->>Enforcer: NewBpfEnforcer()
+    Enforcer->>Enforcer: initBPF()
+    Enforcer->>Kernel: loadBpf() + LoadAndAssign()
+    Enforcer->>Kernel: AttachLSM(VarmorCapable/FileOpen/...)
+    Note over Enforcer,Kernel: 程序 attach，只做一次
+
+    API->>Enforcer: SaveAndApplyBpfProfile(profile)
+    Enforcer->>Cache: 保存到 bpfProfileCache
+    Enforcer->>Cache: applyProfile(enforceID)
+    Note over Enforcer,Cache: 规则 apply，不重新 attach 程序
+
+    Monitor->>Enforcer: 容器启动事件
+    Enforcer->>Container: 读取 Pod annotations
+    Enforcer->>Enforcer: 计算 PID / mnt ns 对应 enforceID
+    Enforcer->>Cache: applyProfile(enforceID)
+    Note over Enforcer,Container: 容器从这里开始真正受 BPF 规则约束

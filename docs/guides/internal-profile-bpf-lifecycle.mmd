@@ -1,0 +1,26 @@
+flowchart TD
+    subgraph S1[阶段一：程序生命周期 initBPF]
+        A1[Agent 启动]
+        A2[NewBpfEnforcer]
+        A3[initBPF]
+        A4[loadBpf]
+        A5[LoadAndAssign maps 和 programs]
+        A6[AttachLSM 到各个 hook]
+        A7[固定的 eBPF 程序常驻内核]
+        A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7
+    end
+
+    subgraph S2[阶段二：规则生命周期 applyProfile]
+        B1[ArmorProfile create or update]
+        B2[SaveAndApplyBpfProfile]
+        B3[保存到 bpfProfileCache]
+        B4[容器启动或重刷已有容器]
+        B5[applyProfile]
+        B6[写 V_profileMode]
+        B7[写 V_capable / V_fileOuter / V_bprmOuter]
+        B8[写 V_netOuter / V_ptrace / V_mountOuter]
+        B9[对应 mnt ns 开始受规则约束]
+        B1 --> B2 --> B3 --> B4 --> B5 --> B6 --> B7 --> B8 --> B9
+    end
+
+    A7 -.复用同一套程序.-> B5

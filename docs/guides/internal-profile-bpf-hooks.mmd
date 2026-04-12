@@ -1,0 +1,30 @@
+flowchart TD
+    A[Agent 启动] --> B[NewBpfEnforcer]
+    B --> C[initBPF]
+    C --> D[loadBpf 和 LoadAndAssign]
+
+    D --> E1[AttachLSM: VarmorCapable]
+    D --> E2[AttachLSM: VarmorFileOpen]
+    D --> E3[AttachLSM: VarmorPathSymlink]
+    D --> E4[AttachLSM: VarmorPathLink]
+    D --> E5[AttachLSM: VarmorPathRename]
+    D --> E6[AttachLSM: VarmorBprmCheckSecurity]
+    D --> E7[AttachLSM: VarmorSocketCreate]
+    D --> E8[AttachLSM: VarmorSocketConnect]
+    D --> E9[AttachLSM: VarmorPtraceAccessCheck]
+    D --> E10[AttachLSM: VarmorMount]
+    D --> E11[AttachLSM: VarmorMoveMount]
+    D --> E12[AttachLSM: VarmorUmount]
+
+    E1 --> G1[能力控制]
+    E2 --> G2[文件访问控制]
+    E3 --> G2
+    E4 --> G2
+    E5 --> G2
+    E6 --> G3[进程执行控制]
+    E7 --> G4[网络创建控制]
+    E8 --> G5[网络连接控制]
+    E9 --> G6[ptrace 控制]
+    E10 --> G7[mount 控制]
+    E11 --> G7
+    E12 --> G7

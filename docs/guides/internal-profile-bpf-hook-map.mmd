@@ -1,0 +1,36 @@
+flowchart LR
+    H1[VarmorCapable]
+    H2[VarmorFileOpen / PathSymlink / PathLink / PathRename]
+    H3[VarmorBprmCheckSecurity]
+    H4[VarmorSocketCreate / VarmorSocketConnect]
+    H5[VarmorPtraceAccessCheck]
+    H6[VarmorMount / VarmorMoveMount / VarmorUmount]
+
+    M1[V_capable]
+    M2[V_fileOuter]
+    M3[V_bprmOuter]
+    M4[V_netOuter]
+    M5[V_ptrace]
+    M6[V_mountOuter]
+    M7[V_profileMode]
+
+    C1[BpfContent.Capabilities]
+    C2[BpfContent.Files]
+    C3[BpfContent.Processes]
+    C4[BpfContent.Networks]
+    C5[BpfContent.Ptrace]
+    C6[BpfContent.Mounts]
+    C7[ProfileMode Enforce / Complain]
+
+    H1 --> M1 --> C1
+    H2 --> M2 --> C2
+    H3 --> M3 --> C3
+    H4 --> M4 --> C4
+    H5 --> M5 --> C5
+    H6 --> M6 --> C6
+    H1 -.读取模式.-> M7 --> C7
+    H2 -.读取模式.-> M7
+    H3 -.读取模式.-> M7
+    H4 -.读取模式.-> M7
+    H5 -.读取模式.-> M7
+    H6 -.读取模式.-> M7

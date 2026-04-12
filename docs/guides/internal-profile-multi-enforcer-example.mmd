@@ -1,0 +1,22 @@
+flowchart LR
+    A[同一条 VarmorPolicy
+AppArmorBPFSeccomp + EnhanceProtect]
+
+    A --> B1[AppArmor 分支]
+    A --> B2[BPF 分支]
+    A --> B3[Seccomp 分支]
+
+    B1 --> C1[AppArmor 文本规则
+如 audit deny /etc/shadow r]
+    B2 --> C2[BpfContent 结构
+Files Networks Capabilities Ptrace Mounts]
+    B3 --> C3[Seccomp JSON
+syscalls + action + args]
+
+    C1 --> D1[profile.AppArmor]
+    C2 --> D2[profile.Bpf]
+    C3 --> D3[profile.Seccomp]
+
+    D1 --> E[同一个 ArmorProfile.Spec.Profile]
+    D2 --> E
+    D3 --> E

@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant PC as Policy Controller
+    participant PF as GenerateProfile
+    participant EC as egressCache
+    participant IW as IPWatcher
+    participant K8S as Pod/Service/EndpointSlice Event
+    participant AP as ArmorProfile
+
+    PC->>PF: NewArmorProfile / GenerateProfile
+    PF-->>PC: profile + EgressInfo
+    PC->>EC: cache policyKey -> EgressInfo
+
+    K8S-->>IW: Pod / Service / EndpointSlice changed
+    IW->>EC: copy matching EgressInfo set
+    IW->>IW: match selector / namespace / service name
+    alt event matches egress target
+        IW->>AP: updateArmorProfile(policyKey, mode, addedIPs, deletedIPs, ports)
+        AP->>AP: mutate Spec.Profile.Bpf.Networks
+        AP-->>IW: Update ArmorProfile
+    end

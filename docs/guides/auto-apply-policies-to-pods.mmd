@@ -1,0 +1,55 @@
+sequenceDiagram
+  participant U as 用户
+  participant APIServer as Kubernetes API Server
+  participant Webhook as vArmor Webhook
+  participant Controller as Policy Controller
+  participant Workload as Deployment/StatefulSet/DaemonSet
+  participant K8sController as Kubernetes Workload Controller
+  participant ArmorProfile as ArmorProfile
+  participant Agent as vArmor Agent
+  participant Node as 节点内核/运行时
+  participant Pod as Pod
+
+  alt 目标是 Workload
+    U->>APIServer: 创建或更新 Workload
+    APIServer-->>Workload: 保存 spec.template
+    Workload->>K8sController: 控制器观察到 Workload
+    K8sController->>Pod: 基于 spec.template 创建 Pod
+  else 目标是裸 Pod
+    U->>APIServer: 直接创建 Pod
+    APIServer-->>Pod: 保存 Pod 对象
+  end
+
+  U->>APIServer: apply VarmorPolicy / VarmorClusterPolicy
+  APIServer->>Webhook: admission validate
+  Webhook-->>APIServer: 校验通过
+  APIServer->>Controller: 触发 reconcile
+  Controller->>ArmorProfile: 创建 ArmorProfile
+  ArmorProfile->>Agent: 下发 profile
+  Agent->>Node: 保存/加载 AppArmor BPF Seccomp
+  Agent->>Controller: sendStatus(Succeeded/Failed)
+
+  opt 已有 Workload 且 updateExistingWorkloads=true
+    Controller->>APIServer: 更新 Workload 的 spec.template
+    APIServer-->>Workload: 写入 annotations/securityContext
+    Controller->>APIServer: 写入 controller.varmor.org/restartedAt
+    APIServer-->>K8sController: 模板已变化
+    K8sController->>Pod: 执行滚动更新并重建 Pod
+  end
+
+  opt 新建或更新 Workload 且命中策略
+    APIServer->>Webhook: admission mutate
+    Webhook-->>APIServer: 返回 JSON Patch
+    APIServer-->>Workload: 写入 annotations/securityContext 到 spec.template
+    K8sController->>Pod: 基于新模板创建 Pod
+  end
+
+  opt 目标是裸 Pod
+    Note over Controller,Pod: controller 不会修改已运行的裸 Pod
+    APIServer->>Webhook: 新建或重建 Pod 时 admission mutate
+    Webhook-->>APIServer: 返回 JSON Patch
+    APIServer-->>Pod: 写入 annotations/securityContext
+    Note over U,Pod: 已运行的裸 Pod 需删除或重建后才会生效
+  end
+
+  Pod->>Node: 容器启动时绑定 Localhost/RuntimeDefault profile
