@@ -114,9 +114,3 @@ apparmor_parser -R /etc/apparmor.d/varmor-example
 - [internal/policy/policy_controller.go](internal/policy/policy_controller.go#L208-L246)
 - [internal/agent/agent.go](internal/agent/agent.go#L440-L500)
 - [pkg/lsm/apparmor/apparmor.go](pkg/lsm/apparmor/apparmor.go#L1-L160)
-
----
-
-若需要，我可以：
-- 基于具体的 `EnhanceProtect` 配置生成完整的 `spec.profile.appArmor` 并写入一个示例 ArmorProfile YAML；
-- 或在本地用当前仓库代码生成并展示一个实时的 profile 示例。告知你的偏好即可。

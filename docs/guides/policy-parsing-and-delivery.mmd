@@ -1,0 +1,44 @@
+sequenceDiagram
+  participant U as 用户<br/>[集群外 / 使用入口]
+  participant APIServer as API Server<br/>[master / API 层]
+  participant Validate as Validation Webhook<br/>[master / 准入校验层]
+  participant Controller as Policy Controller<br/>[master / 策略编排层]
+  participant ProfileBuilder as GenerateProfile<br/>[master / 策略解析层]
+  participant ArmorProfile as ArmorProfile<br/>[master / 内部对象层]
+  participant PolicyCacher as Policy Cacher<br/>[master / 缓存匹配层]
+  participant Mutate as Mutation Webhook<br/>[master / 准入注入层]
+  participant Workload as Workload/Pod 对象<br/>[master / 对象层]
+  participant Agent as vArmor Agent<br/>[worker / 节点执行层]
+  participant Node as 节点内核/运行时<br/>[worker / 内核与运行时层]
+  participant Status as Status Manager<br/>[master / 状态聚合层]
+
+  Note over APIServer,Status: 图中 master 表示控制面组件或控制面对象<br/>worker 表示真正落在节点上的执行组件
+
+  U->>APIServer: apply VarmorPolicy / VarmorClusterPolicy
+  APIServer->>Validate: admission validate
+  Validate-->>APIServer: 只做字段合法性校验
+  APIServer-->>Controller: informer 触发 reconcile
+  APIServer-->>PolicyCacher: informer 缓存 target / mode / enforcer
+
+  Controller->>ProfileBuilder: NewArmorProfile / GenerateProfile
+  Note over Controller,ProfileBuilder: 在这里解析 spec.policy\n生成 AppArmor / BPF / Seccomp 内容
+  ProfileBuilder-->>Controller: 返回 varmor.Profile + EgressInfo
+  Controller->>ArmorProfile: create / update 内部执行对象
+
+  ArmorProfile-->>Agent: informer 分发 ArmorProfile 事件
+  Agent->>Node: 保存 AppArmor / Seccomp 文件\n应用 BPF profile 到内核
+  Agent->>Status: sendStatus(Succeeded / Failed)
+  Status-->>APIServer: 更新 ArmorProfile / Policy status
+
+  Workload->>APIServer: 创建或更新命中的 Workload / Pod
+  APIServer->>Mutate: admission mutate
+  Mutate->>PolicyCacher: 按 target 匹配策略
+  Note over Mutate,Workload: 在这里下发到对象层\n写 annotations 和 securityContext
+  Mutate-->>APIServer: 返回 JSON Patch
+  APIServer-->>Workload: 写入 profile 名称和运行时配置
+
+  opt updateExistingWorkloads=true
+    Controller->>Workload: 更新模板注解并触发滚动重建
+  end
+
+  Note over Workload,Node: Pod 启动后由 kubelet / runtime\n结合节点已落地的 profile 真正生效

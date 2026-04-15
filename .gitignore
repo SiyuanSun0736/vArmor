@@ -31,3 +31,4 @@ coverage.out
 /website/yarn-debug.log*
 /website/yarn-error.log*
 yarn.lock
+*.deb

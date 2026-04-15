@@ -1,0 +1,73 @@
+sequenceDiagram
+  participant U as 用户
+  participant APIServer as Kubernetes API Server
+  participant Webhook as vArmor Webhook
+  participant PolicyCacher as Policy Cacher
+  participant Controller as Policy Controller
+  participant ArmorProfile as ArmorProfile
+  participant ArmorProfileModel as ArmorProfileModel
+  participant Agent as vArmor Agent
+  participant Status as Status Manager
+  participant Workload as Workload/Pod
+  participant Node as 节点内核/运行时
+
+  U->>APIServer: 创建或更新 VarmorPolicy / VarmorClusterPolicy
+  APIServer->>Webhook: admission validate
+  alt 校验失败
+    Webhook-->>APIServer: reject request
+    APIServer-->>U: 返回 Forbidden / Error
+  else 校验通过
+    Webhook-->>APIServer: allow request
+    APIServer-->>PolicyCacher: informer 更新 target / enforcer / mode 缓存
+    APIServer-->>Controller: informer 入队 reconcile
+
+    alt 新建策略
+      Controller->>Controller: ValidateAddPolicy + NewArmorProfile
+      opt BehaviorModeling 模式
+        Controller->>ArmorProfileModel: 重置已存在的建模状态
+      end
+      Controller->>ArmorProfile: 创建对象并绑定 ownerReference
+    else 更新策略
+      Controller->>Controller: ValidateUpdatePolicy + GenerateProfile
+      opt BehaviorModeling 未完成
+        Controller->>ArmorProfileModel: 重置建模状态与缓存
+      end
+      Controller->>ArmorProfile: 更新 spec / status
+    end
+
+    par 节点落地链路
+      ArmorProfile-->>Agent: informer 分发 create / update 事件
+      Agent->>Node: 保存或加载 AppArmor / BPF / Seccomp profile
+      Agent->>Status: sendStatus(Succeeded / Failed)
+      Status->>ArmorProfile: 汇总各节点加载状态
+      Status->>APIServer: 更新 Policy / ClusterPolicy phase 与 ready
+    and 准入注入链路
+      Note over PolicyCacher,Workload: 后续目标 Workload 或 Pod 的 mutation 依赖缓存匹配
+      Workload->>APIServer: 创建或更新命中 target 的 Workload / Pod
+      APIServer->>Webhook: admission mutate
+      Webhook->>PolicyCacher: ClusterPolicy 优先匹配 target
+      Webhook-->>APIServer: 返回 JSON Patch
+      APIServer-->>Workload: 写入 annotations / securityContext
+    end
+
+    opt updateExistingWorkloads=true
+      Controller->>Workload: 更新模板注解并触发滚动重建
+    end
+
+    opt BehaviorModeling 模式
+      Agent->>Status: 上报行为数据
+      Status->>ArmorProfileModel: 持久化模型数据或落盘
+      Status->>APIServer: 建模完成后推进 phase=Completed
+    end
+  end
+
+  U->>APIServer: 删除 Policy CR
+  APIServer-->>PolicyCacher: informer 删除缓存
+  APIServer-->>Controller: informer 入队 delete 事件
+  Controller->>ArmorProfile: 移除 finalizers 并触发删除
+  opt updateExistingWorkloads=true
+    Controller->>Workload: 删除注解并触发滚动重建
+  end
+  ArmorProfile-->>Agent: informer 分发 delete 事件
+  Agent->>Node: 卸载并删除 AppArmor / BPF / Seccomp profile
+  Status->>APIServer: 清理 PolicyStatus / ModelingStatus 缓存

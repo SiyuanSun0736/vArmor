@@ -163,7 +163,7 @@ flowchart LR
 
 对应的 SVG 图如下：
 
-![GenerateProfile 到三类产物的总览对照图](./internal-profile-generateprofile-outputs.svg)
+![GenerateProfile 到三类产物的总览对照图](./internal-profile-generateprofile-outputs.png)
 
 这张图的重点不是讲某一个子包的内部细节，而是强调三件事：
 
@@ -220,7 +220,7 @@ syscalls + action + args]
 
 对应的 SVG 图如下：
 
-![同一条多 enforcer 策略的三类产物并排对照](./internal-profile-multi-enforcer-example.svg)
+![同一条多 enforcer 策略的三类产物并排对照](./internal-profile-multi-enforcer-example.png)
 
 这张图想表达的是：
 
@@ -884,7 +884,7 @@ flowchart TD
 
 对应的 SVG 图如下：
 
-![BPF egress 从 Pod 与 Service 到 Networks 和 EgressInfo 的展开图](./internal-profile-bpf-egress-resolution.svg)
+![BPF egress 从 Pod 与 Service 到 Networks 和 EgressInfo 的展开图](./internal-profile-bpf-egress-resolution.png)
 
 这张图专门说明四个容易混淆的点：
 
@@ -945,7 +945,7 @@ sequenceDiagram
 
 对应的 SVG 图如下：
 
-![controller 因 EgressInfo 变化而刷新 ArmorProfile 的链路](./internal-profile-egress-refresh.svg)
+![controller 因 EgressInfo 变化而刷新 ArmorProfile 的链路](./internal-profile-egress-refresh.png)
 
 这张图最关键的点有三个：
 
@@ -1525,7 +1525,7 @@ sequenceDiagram
 
 对应的 SVG 图如下：
 
-![vArmor BPF attach 与生效时机](./internal-profile-bpf-attach.svg)
+![vArmor BPF attach 与生效时机](./internal-profile-bpf-attach.png)
 
 这张图想表达的核心结论是：
 
@@ -1597,7 +1597,7 @@ flowchart TD
 
 对应的 SVG 图如下：
 
-![vArmor BPF LSM hook attach 明细](./internal-profile-bpf-hooks.svg)
+![vArmor BPF LSM hook attach 明细](./internal-profile-bpf-hooks.png)
 
 这张图说明了三件事：
 
@@ -1668,7 +1668,7 @@ flowchart LR
 
 对应的 SVG 图如下：
 
-![vArmor BPF hook 到 map 字段对应关系](./internal-profile-bpf-hook-map.svg)
+![vArmor BPF hook 到 map 字段对应关系](./internal-profile-bpf-hook-map.png)
 
 这张图想说明的是：
 
@@ -1726,7 +1726,7 @@ flowchart TD
 
 对应的 SVG 图如下：
 
-![vArmor BPF 程序生命周期与规则生命周期对照](./internal-profile-bpf-lifecycle.svg)
+![vArmor BPF 程序生命周期与规则生命周期对照](./internal-profile-bpf-lifecycle.png)
 
 这张图对应的核心理解是：
 
@@ -1823,7 +1823,7 @@ flowchart TD
 
 对应的 SVG 图如下：
 
-![vArmor BpfContent 字段来源与落点](./internal-profile-bpf-content-source.svg)
+![vArmor BpfContent 字段来源与落点](./internal-profile-bpf-content-source.png)
 
 这张图要表达的重点是：
 

@@ -1,0 +1,13 @@
+{
+  "theme": "default",
+  "backgroundColor": "transparent",
+  "fontFamily": "Noto Sans CJK SC, Noto Sans, Arial, sans-serif",
+  "flowchart": {
+    "htmlLabels": false,
+    "useMaxWidth": false,
+    "curve": "basis"
+  },
+  "sequence": {
+    "useMaxWidth": false
+  }
+}

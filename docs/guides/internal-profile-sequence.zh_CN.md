@@ -393,37 +393,37 @@ sequenceDiagram
 
 如果把视角收窄到“vArmor 使用 BPF 时，程序在什么时候 attach，规则又在什么时候真正作用到容器”，可以继续看下面这张图：
 
-![vArmor BPF attach 与生效时机](./internal-profile-bpf-attach.svg)
+![vArmor BPF attach 与生效时机](./internal-profile-bpf-attach.png)
 
 如果再往内核 hook 这一层继续拆，AttachLSM 挂到哪些 hook、这些 hook 分别覆盖什么控制类别，可以看下面这张细化图：
 
-![vArmor BPF LSM hook attach 明细](./internal-profile-bpf-hooks.svg)
+![vArmor BPF LSM hook attach 明细](./internal-profile-bpf-hooks.png)
 
 如果你想把“固定程序 attach 到 hook”与“规则数据写进 map”直接对应起来，可以继续看这两张图：
 
-![vArmor BPF hook 到 map 字段对应关系](./internal-profile-bpf-hook-map.svg)
+![vArmor BPF hook 到 map 字段对应关系](./internal-profile-bpf-hook-map.png)
 
-![vArmor BPF 程序生命周期与规则生命周期对照](./internal-profile-bpf-lifecycle.svg)
+![vArmor BPF 程序生命周期与规则生命周期对照](./internal-profile-bpf-lifecycle.png)
 
 如果再往生成侧追一层，想看 `internal/profile/bpf` 是如何一步步把 built-in rules、raw rules 和 egress 展开结果汇总成 `BpfContent`，可以看：
 
-![vArmor BpfContent 字段来源与落点](./internal-profile-bpf-content-source.svg)
+![vArmor BpfContent 字段来源与落点](./internal-profile-bpf-content-source.png)
 
 如果你想先从更高层的“统一产物视角”理解 `GenerateProfile()`，可以看：
 
-![GenerateProfile 到三类产物的总览对照图](./internal-profile-generateprofile-outputs.svg)
+![GenerateProfile 到三类产物的总览对照图](./internal-profile-generateprofile-outputs.png)
 
 如果你想只盯住 BPF egress 这一段，看 Pod / Service 是如何展开成 `Networks` 和 `EgressInfo` 的，可以看：
 
-![BPF egress 从 Pod 与 Service 到 Networks 和 EgressInfo 的展开图](./internal-profile-bpf-egress-resolution.svg)
+![BPF egress 从 Pod 与 Service 到 Networks 和 EgressInfo 的展开图](./internal-profile-bpf-egress-resolution.png)
 
 如果你想继续往后看，理解这些 `EgressInfo` 是怎么被 controller 缓存、又怎么被 `IPWatcher` 拿来增量刷新 `ArmorProfile.Spec.Profile.Bpf.Networks` 的，可以看：
 
-![controller 因 EgressInfo 变化而刷新 ArmorProfile 的链路](./internal-profile-egress-refresh.svg)
+![controller 因 EgressInfo 变化而刷新 ArmorProfile 的链路](./internal-profile-egress-refresh.png)
 
 如果你想把多 enforcer 的统一策略输入和三类最终产物并排对照起来，可以看：
 
-![同一条多 enforcer 策略的三类产物并排对照](./internal-profile-multi-enforcer-example.svg)
+![同一条多 enforcer 策略的三类产物并排对照](./internal-profile-multi-enforcer-example.png)
 
 这张图可以直接看出两种机制的本质差异：
 

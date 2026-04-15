@@ -105,7 +105,7 @@ flowchart TD
 
 对应的 SVG 图如下：
 
-![AppArmor 生成链路图](./internal-profile-apparmor-pipeline.svg)
+![AppArmor 生成链路图](./internal-profile-apparmor-pipeline.png)
 
 这张图要表达的核心点是：
 
