@@ -52,6 +52,9 @@ vArmor reference documents are available at [varmor.org](https://varmor.org).
 
 ⏱️ **[Performance Specifications](https://www.varmor.org/docs/main/guides/performance)**
 
+## Kernel Compatibility
+For Ubuntu 24.04 hosts running the `6.8.0-110-generic` kernel, vArmor now tracks the eBPF submodule at [SiyuanSun0736/vArmor-ebpf](https://github.com/SiyuanSun0736/vArmor-ebpf). This compatibility update includes the `path_rename` LSM hook signature fix required by the Ubuntu 24 kernel, reduces verifier pressure for `move_mount`, and separates the `path_link` and `path_rename` tail-call program arrays so the BPF LSM programs can be loaded successfully on Ubuntu 24.
+
 
 ## Contributing
 Thanks for your interest in contributing to vArmor! Here are some steps to help get you started:
@@ -69,7 +72,7 @@ The vArmor project is licensed under Apache 2.0, except for third party componen
 
 Your integration of vArmor into your own projects should require compliance with the Apache 2.0 License, as well as the other licenses applicable to the third party components included within vArmor.
 
-The eBPF code is located at [vArmor-ebpf](https://github.com/bytedance/vArmor-ebpf) and licensed under GPL-2.0.
+The eBPF code is located at [vArmor-ebpf](https://github.com/SiyuanSun0736/vArmor-ebpf) and licensed under GPL-2.0.
 
 
 ## Credits

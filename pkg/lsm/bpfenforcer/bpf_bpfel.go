@@ -114,17 +114,18 @@ type bpfProgramSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type bpfMapSpecs struct {
-	FileProgs     *ebpf.MapSpec `ebpf:"file_progs"`
-	V_auditRb     *ebpf.MapSpec `ebpf:"v_audit_rb"`
-	V_bprmOuter   *ebpf.MapSpec `ebpf:"v_bprm_outer"`
-	V_buffer      *ebpf.MapSpec `ebpf:"v_buffer"`
-	V_capable     *ebpf.MapSpec `ebpf:"v_capable"`
-	V_fileOuter   *ebpf.MapSpec `ebpf:"v_file_outer"`
-	V_mountOuter  *ebpf.MapSpec `ebpf:"v_mount_outer"`
-	V_netOuter    *ebpf.MapSpec `ebpf:"v_net_outer"`
-	V_podIp       *ebpf.MapSpec `ebpf:"v_pod_ip"`
-	V_profileMode *ebpf.MapSpec `ebpf:"v_profile_mode"`
-	V_ptrace      *ebpf.MapSpec `ebpf:"v_ptrace"`
+	PathLinkProgs   *ebpf.MapSpec `ebpf:"path_link_progs"`
+	PathRenameProgs *ebpf.MapSpec `ebpf:"path_rename_progs"`
+	V_auditRb       *ebpf.MapSpec `ebpf:"v_audit_rb"`
+	V_bprmOuter     *ebpf.MapSpec `ebpf:"v_bprm_outer"`
+	V_buffer        *ebpf.MapSpec `ebpf:"v_buffer"`
+	V_capable       *ebpf.MapSpec `ebpf:"v_capable"`
+	V_fileOuter     *ebpf.MapSpec `ebpf:"v_file_outer"`
+	V_mountOuter    *ebpf.MapSpec `ebpf:"v_mount_outer"`
+	V_netOuter      *ebpf.MapSpec `ebpf:"v_net_outer"`
+	V_podIp         *ebpf.MapSpec `ebpf:"v_pod_ip"`
+	V_profileMode   *ebpf.MapSpec `ebpf:"v_profile_mode"`
+	V_ptrace        *ebpf.MapSpec `ebpf:"v_ptrace"`
 }
 
 // bpfVariableSpecs contains global variables before they are loaded into the kernel.
@@ -155,22 +156,24 @@ func (o *bpfObjects) Close() error {
 //
 // It can be passed to loadBpfObjects or ebpf.CollectionSpec.LoadAndAssign.
 type bpfMaps struct {
-	FileProgs     *ebpf.Map `ebpf:"file_progs"`
-	V_auditRb     *ebpf.Map `ebpf:"v_audit_rb"`
-	V_bprmOuter   *ebpf.Map `ebpf:"v_bprm_outer"`
-	V_buffer      *ebpf.Map `ebpf:"v_buffer"`
-	V_capable     *ebpf.Map `ebpf:"v_capable"`
-	V_fileOuter   *ebpf.Map `ebpf:"v_file_outer"`
-	V_mountOuter  *ebpf.Map `ebpf:"v_mount_outer"`
-	V_netOuter    *ebpf.Map `ebpf:"v_net_outer"`
-	V_podIp       *ebpf.Map `ebpf:"v_pod_ip"`
-	V_profileMode *ebpf.Map `ebpf:"v_profile_mode"`
-	V_ptrace      *ebpf.Map `ebpf:"v_ptrace"`
+	PathLinkProgs   *ebpf.Map `ebpf:"path_link_progs"`
+	PathRenameProgs *ebpf.Map `ebpf:"path_rename_progs"`
+	V_auditRb       *ebpf.Map `ebpf:"v_audit_rb"`
+	V_bprmOuter     *ebpf.Map `ebpf:"v_bprm_outer"`
+	V_buffer        *ebpf.Map `ebpf:"v_buffer"`
+	V_capable       *ebpf.Map `ebpf:"v_capable"`
+	V_fileOuter     *ebpf.Map `ebpf:"v_file_outer"`
+	V_mountOuter    *ebpf.Map `ebpf:"v_mount_outer"`
+	V_netOuter      *ebpf.Map `ebpf:"v_net_outer"`
+	V_podIp         *ebpf.Map `ebpf:"v_pod_ip"`
+	V_profileMode   *ebpf.Map `ebpf:"v_profile_mode"`
+	V_ptrace        *ebpf.Map `ebpf:"v_ptrace"`
 }
 
 func (m *bpfMaps) Close() error {
 	return _BpfClose(
-		m.FileProgs,
+		m.PathLinkProgs,
+		m.PathRenameProgs,
 		m.V_auditRb,
 		m.V_bprmOuter,
 		m.V_buffer,

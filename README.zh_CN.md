@@ -55,6 +55,9 @@ vArmor 由字节跳动终端安全团队的 **Elkeid Team** 研发，目前该�
 
 👉 **[性能说明](https://www.varmor.org/docs/guides/performance)**
 
+## 内核兼容性
+针对运行 `6.8.0-110-generic` 内核的 Ubuntu 24.04 主机，vArmor 现在跟踪的 eBPF 子模块为 [SiyuanSun0736/vArmor-ebpf](https://github.com/SiyuanSun0736/vArmor-ebpf)。这次兼容性更新包括 Ubuntu 24 内核要求的 `path_rename` LSM Hook 签名修正、降低 `move_mount` 的 verifier 压力，以及拆分 `path_link` 和 `path_rename` 的 tail-call program array，从而保证 BPF LSM 程序能够在 Ubuntu 24 上成功加载。
+
 
 ## 贡献
 感谢您有兴趣为 vArmor 做出贡献！以下是帮助您入门的一些步骤：
@@ -71,7 +74,7 @@ vArmor 采用 Apache License, Version 2.0 许可证，受不同许可证约束�
 
 将 vArmor 集成到您自己的项目中应遵守 Apache 2.0 许可证以及适用于 vArmor 中包含的第三方组件的其他许可证。
 
-vArmor 所使用的 eBPF 代码位于 [vArmor-ebpf](https://github.com/bytedance/vArmor-ebpf.git) 项目，并且使用 GPL-2.0 许可证。
+vArmor 所使用的 eBPF 代码位于 [vArmor-ebpf](https://github.com/SiyuanSun0736/vArmor-ebpf) 项目，并且使用 GPL-2.0 许可证。
 
 
 ## 致谢
