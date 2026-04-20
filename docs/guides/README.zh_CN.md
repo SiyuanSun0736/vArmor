@@ -4,4 +4,5 @@
 * [性能说明](performance/README.zh_CN.md)
 * [策略顾问](policy_advisor.zh_CN.md)
 * [本地开发](development.zh_CN.md)
+* [Ubuntu 22.04 / 5.15.0-174-generic 内核兼容与构建](ubuntu_22_5_15_kernel_support.zh_CN.md)
 * [Ubuntu 24.04 内核兼容与部署](ubuntu_24_kernel_support.zh_CN.md)

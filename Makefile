@@ -41,6 +41,7 @@ CHART_VERSION_DEV := $(shell echo $(CHART_APP_VERSION_DEV) | sed 's/^v//')
 
 KERNEL_RELEASE = $(shell uname -r)
 APPARMOR_ABI_NAME = kernel-$(KERNEL_RELEASE)
+VMLINUX_BTF ?=
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -130,9 +131,13 @@ generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and
 	sed -i '/\tif in.SyscallRawRules != nil {/,/\t}/c\\tif in.SyscallRawRules != nil {\n\t\tin, out := &in.SyscallRawRules, &out.SyscallRawRules\n\t\t*out = make([]specs_go.LinuxSyscall, len(*in))\n\t\tlinuxSyscallDeepCopyInto(in, out)' apis/varmor/v1beta1/zz_generated.deepcopy.go
 
 .PHONY: build-ebpf
-build-ebpf: ## Generate the ebpf code and lib.
-	@echo "[+] Generate the ebpf code and lib."
-	make -C ./vArmor-ebpf generate-ebpf
+build-ebpf: ## Generate the ebpf code and lib. Set VMLINUX_BTF=/sys/kernel/btf/vmlinux to rebuild for a target kernel.
+	@if [ -n "$(VMLINUX_BTF)" ]; then \
+		echo "[+] Regenerate vmlinux.h from $(VMLINUX_BTF) and generate the ebpf code and lib."; \
+	else \
+		echo "[+] Generate the ebpf code and lib."; \
+	fi
+	make -C ./vArmor-ebpf generate-ebpf VMLINUX_BTF="$(VMLINUX_BTF)"
 
 .PHONY: copy-ebpf
 copy-ebpf: ## Copy the ebpf code and lib.

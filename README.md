@@ -59,6 +59,8 @@ vArmor reference documents are available at [varmor.org](https://varmor.org).
 ## Kernel Compatibility
 For Ubuntu 24.04 hosts running the `6.8.0-110-generic` kernel, vArmor now tracks the eBPF submodule at [SiyuanSun0736/vArmor-ebpf](https://github.com/SiyuanSun0736/vArmor-ebpf). This compatibility update includes the `path_rename` LSM hook signature fix required by the Ubuntu 24 kernel, reduces verifier pressure for `move_mount`, and separates the `path_link` and `path_rename` tail-call program arrays so the BPF LSM programs can be loaded successfully on Ubuntu 24.
 
+For Ubuntu 22.04 hosts running kernels such as `5.15.0-174-generic`, the `path_rename` LSM hook still uses the pre-Ubuntu-24 prototype without the extra `flags` argument. Do not reuse the Ubuntu 24 `headers/vmlinux.h` as-is for those kernels. You can now pass `VMLINUX_BTF=/sys/kernel/btf/vmlinux` to `make build-ebpf` so the build regenerates `vArmor-ebpf/headers/vmlinux.h` from the target kernel BTF before compiling the BPF objects, for example: `make VMLINUX_BTF=/sys/kernel/btf/vmlinux build-ebpf copy-ebpf local`.
+
 
 ## Contributing
 Thanks for your interest in contributing to vArmor! Here are some steps to help get you started:

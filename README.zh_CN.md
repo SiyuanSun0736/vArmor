@@ -62,6 +62,8 @@ vArmor 由字节跳动终端安全团队的 **Elkeid Team** 研发，目前该�
 ## 内核兼容性
 针对运行 `6.8.0-110-generic` 内核的 Ubuntu 24.04 主机，vArmor 现在跟踪的 eBPF 子模块为 [SiyuanSun0736/vArmor-ebpf](https://github.com/SiyuanSun0736/vArmor-ebpf)。这次兼容性更新包括 Ubuntu 24 内核要求的 `path_rename` LSM Hook 签名修正、降低 `move_mount` 的 verifier 压力，以及拆分 `path_link` 和 `path_rename` 的 tail-call program array，从而保证 BPF LSM 程序能够在 Ubuntu 24 上成功加载。
 
+对于 Ubuntu 22.04 上的 `5.15.0-174-generic` 等仍使用旧版 `path_rename` 原型的内核，不应直接复用上述 Ubuntu 24 版 `headers/vmlinux.h`。现在可以在构建时传入 `VMLINUX_BTF=/sys/kernel/btf/vmlinux`，让 `make build-ebpf` 先按目标节点的 BTF 重新生成 `vArmor-ebpf/headers/vmlinux.h`，再编译 BPF 产物。例如：`make VMLINUX_BTF=/sys/kernel/btf/vmlinux build-ebpf copy-ebpf local`。详细步骤可参考 [docs/guides/ubuntu_22_5_15_kernel_support.zh_CN.md](docs/guides/ubuntu_22_5_15_kernel_support.zh_CN.md)。
+
 
 ## 贡献
 感谢您有兴趣为 vArmor 做出贡献！以下是帮助您入门的一些步骤：
