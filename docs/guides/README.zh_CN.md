@@ -6,3 +6,4 @@
 * [本地开发](development.zh_CN.md)
 * [Ubuntu 22.04 / 5.15.0-174-generic 内核兼容与构建](ubuntu_22_5_15_kernel_support.zh_CN.md)
 * [Ubuntu 24.04 内核兼容与部署](ubuntu_24_kernel_support.zh_CN.md)
+* [Ubuntu 内核兼容相关四个提交总结](ubuntu_kernel_compatibility_commit_summary.zh_CN.md)
